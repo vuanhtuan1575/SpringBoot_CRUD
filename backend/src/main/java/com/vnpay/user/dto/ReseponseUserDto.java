@@ -9,6 +9,8 @@ import lombok.Setter;
 @NoArgsConstructor
 public class ReseponseUserDto {
 
+    private Long id;
+
     private String username;
 
     private String name;

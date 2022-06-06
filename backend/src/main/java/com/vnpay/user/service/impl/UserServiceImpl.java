@@ -9,6 +9,8 @@ import com.vnpay.user.dto.UpdateDto;
 import com.vnpay.user.entity.User;
 import com.vnpay.user.repository.UserRepository;
 import com.vnpay.user.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +28,9 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
 
+    private static final Logger LOG = LoggerFactory.getLogger(UserServiceImpl.class);
+
+
     @Autowired
     public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
@@ -39,12 +44,15 @@ public class UserServiceImpl implements UserService {
 
         // If Username is exist then User doesn't create
         Optional<User> opUser = userRepository.findByUsername(requestUser.getUsername());
+
         if (opUser.isPresent()) {
+            LOG.info("USERNAME IS EXIST - value: {}", requestUser.getUsername());
             return ResponseHandler.ResponseCommon(HttpStatus.BAD_REQUEST, "USER IS EXIST", false);
         }
         Optional<Role> opRole = roleRepository.findByName(requestUser.getRoleName());
 
         if (opRole.isEmpty()) {
+            LOG.info("ROLE ISN'T EXIST - value: {}", requestUser.getRoleName());
             return ResponseHandler.ResponseCommon(HttpStatus.BAD_REQUEST, "ROLE ISN'T EXIST", false);
         }
 
@@ -60,6 +68,8 @@ public class UserServiceImpl implements UserService {
         user.setRole(opRole.get());
 
         User saveUser = userRepository.save(user);
+
+        LOG.info("Create user sucess - value: {}", requestUser.getRoleName());
 
         ReseponseUserDto reseponseUserDto = new ReseponseUserDto();
         reseponseUserDto.setName(saveUser.getName());
@@ -77,7 +87,6 @@ public class UserServiceImpl implements UserService {
             return ResponseHandler.ResponseCommon(HttpStatus.BAD_REQUEST, "Find not found User", null);
         }
         userRepository.delete(opUser.get());
-
         return ResponseHandler.ResponseCommon(HttpStatus.OK, "Delete is success", true);
     }
 
@@ -111,7 +120,6 @@ public class UserServiceImpl implements UserService {
 
         if (opUser.isEmpty()) {
             return ResponseHandler.ResponseCommon(HttpStatus.BAD_REQUEST, "Find not found User", null);
-//			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseCommon);
         }
 
 
@@ -119,6 +127,7 @@ public class UserServiceImpl implements UserService {
         reseponseUserDto.setName(opUser.get().getName());
         reseponseUserDto.setPhone(opUser.get().getPhone());
         reseponseUserDto.setUsername(opUser.get().getUsername());
+        reseponseUserDto.setId(opUser.get().getId());
 
         return ResponseEntity.status(HttpStatus.OK).body(reseponseUserDto);
     }
@@ -135,6 +144,7 @@ public class UserServiceImpl implements UserService {
             reseponseUserDto.setPhone(user.getPhone());
             reseponseUserDto.setUsername(user.getUsername());
             reseponseUserDto.setRoleName(user.getRole().getName());
+            reseponseUserDto.setId(user.getId());
 
             //add dto into listResponse
             listResponse.add(reseponseUserDto);

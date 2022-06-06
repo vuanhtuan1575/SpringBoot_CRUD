@@ -1,0 +1,16 @@
+[
+  {
+    "username":"admin",
+    "password":"password",
+    "name": "Tuan Vu Anh",
+    "phone": "+846677028",
+    "roleName": "ROLE_ADMIN"
+  },
+  {
+    "username":"user",
+    "password":"password",
+    "name": "Tuan User",
+    "phone": "+845577028",
+    "roleName": "ROLE_USER"
+  }
+]

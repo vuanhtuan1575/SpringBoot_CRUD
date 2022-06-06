@@ -3,33 +3,24 @@ import { Dispatch } from 'redux';
 import { ActionType } from '../action-types';
 import { Action } from '../actions';
 
-export const searchRepositories = (term: string) => {
+export const getAllUser = () => {
   return async (dispatch: Dispatch<Action>) => {
     dispatch({
-      type: ActionType.SEARCH_REPOSITORIES,
+      type: ActionType.GET_ALL_USER,
     });
 
     try {
       const { data } = await axios.get(
-        'https://registry.npmjs.org/-/v1/search',
-        {
-          params: {
-            text: term,
-          },
-        }
+        'http://localhost:8082/api/user'
       );
 
-      const names = data.objects.map((result: any) => {
-        return result.package.name;
-      });
-
       dispatch({
-        type: ActionType.SEARCH_REPOSITORIES_SUCCESS,
-        payload: names,
+        type: ActionType.GET_ALL_USER_SUCCESS,
+        payload: data,
       });
-    } catch (err) {
+    } catch (err:any) {
       dispatch({
-        type: ActionType.SEARCH_REPOSITORIES_ERROR,
+        type: ActionType.GET_ALL_USER_ERROR,
         payload: err.message,
       });
     }
@@ -63,7 +54,7 @@ export const authenticate = (username: string,password:string) => {
         type: ActionType.AUTHENTICATE_SUCCESS,
         payload: data,
       });
-    } catch (err) {
+    } catch (err:any) {
       dispatch({
         type: ActionType.AUTHENTICATE_ERROR,
         payload: err.message,

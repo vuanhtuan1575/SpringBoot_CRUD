@@ -28,10 +28,27 @@ interface AuthenticateErrorAction {
   payload: any;
 }
 
+interface GetAllUserAction {
+  type: ActionType.GET_ALL_USER;
+}
+
+interface GetAllUserSuccessAction {
+  type: ActionType.GET_ALL_USER_SUCCESS;
+  payload: any;
+}
+
+interface GetAllUserErrorAction {
+  type: ActionType.GET_ALL_USER_ERROR;
+  payload: any;
+}
+
 export type Action =
   | SearchRepositoriesAction
   | SearchRepositoriesSuccessAction
   | SearchRepositoriesErrorAction
   | AuthenticateAction
   | AuthenticateSuccessAction
-  | AuthenticateErrorAction ;
+  | AuthenticateErrorAction 
+  | GetAllUserAction
+  | GetAllUserSuccessAction
+  | GetAllUserErrorAction;

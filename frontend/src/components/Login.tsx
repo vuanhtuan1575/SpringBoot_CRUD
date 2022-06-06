@@ -2,12 +2,14 @@ import { useState } from 'react';
 import { useTypedSelector } from '../hooks/useTypedSelector';
 import { useActions } from '../hooks/useActions';
 import { Button,Form } from 'react-bootstrap';
+import { Navigate } from 'react-router-dom';
+
 
 const Login: React.FC = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const { authenticate } = useActions();
-  const { data, error, loading } = useTypedSelector(
+  const { token, error, loading } = useTypedSelector(
     (state) => state.repositories
   );
 
@@ -17,7 +19,13 @@ const Login: React.FC = () => {
     authenticate(username,password);
     console.log("submiting");
   };
-
+  if(!error && !loading && token){
+    localStorage.setItem('token', JSON.stringify(token));
+    return (
+      <Navigate to="/admin" replace={true} />
+    )
+  }
+  else
   return (
     <div className="d-flex justify-content-center">
         <Form onSubmit={onSubmit}>
@@ -37,6 +45,9 @@ const Login: React.FC = () => {
                 Login
             </Button>
         </Form>
+
+      {error && <h3>{error}</h3>}
+      {loading && <h3>Loading...</h3>}
     </div>
   );
 };
